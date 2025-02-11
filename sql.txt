@@ -1,0 +1,43 @@
+CREATE TABLE partners (
+    id SERIAL PRIMARY KEY,
+    type TEXT,
+    name TEXT UNIQUE,
+    director TEXT,
+    email TEXT,
+    phone TEXT,
+    adresse TEXT,
+    inn TEXT,
+    rating INT
+);
+
+\COPY partners (type, name, director, email, phone, adresse, inn, rating) FROM '/home/alexander/Downloads/csv-files/files/Partners_import.csv' DELIMITER ';' CSV HEADER;
+
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    product_type_id TEXT REFERENCES product_type(type) NOT NULL,
+    name text UNIQUE NOT NULL,
+    article text NOT NULL,
+    min_price_for_partner decimal NOT NULL,
+);
+
+\COPY products (product_type_id, name, article, min_price_for_partner) FROM '/home/alexander/Downloads/csv-files/files/Products_import.csv' DELIMITER ';' CSV HEADER;
+
+CREATE TABLE sales (
+    id SERIAL PRIMARY KEY,
+    product_id TEXT REFERENCES products(name) NOT NULL,
+    partner_id TEXT REFERENCES partners(name) NOT NULL,
+    production_quantity bigint,
+    date_of_sale DATE,
+);
+
+\COPY sales (product_id, partner_id, production_quantity, date_of_sale) FROM '/home/alexander/Downloads/csv-files/files/Partner_products_import.csv' DELIMITER ';' CSV HEADER;
+
+
+CREATE TABLE product_type (
+	id SERIAL PRIMARY KEY,
+	type TEXT UNIQUE,
+	coefficient_product decimal
+);
+
+
+\COPY product_type (type, coefficient_product) FROM '/home/alexander/Downloads/csv-files/files/Product_type_import.csv' DELIMITER ';' CSV HEADER;
